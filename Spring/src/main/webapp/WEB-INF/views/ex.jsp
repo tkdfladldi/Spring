@@ -36,34 +36,19 @@
 								            <input id="keyword" placeholder="검색어 입력.." class="dataTable-input" style="position: relative; top: 10px;" type="text">
 								     		<button class="btn btn-primary" style="position:relative; left: 210px; bottom: 25px;" onclick="checkboxGET();">검색하기</button>
 								     </div>
-								     <table>
-									     <tr>
-									      <td align="center" width="200" style="position: relative; left : 300px; font-size:12px;">특정 컬럼 조회</td>
-									     </tr>
-								     </table>
-								      <div id="" style="position:relative; left : 300px;  font-size:15px;">
-								         <input onchange="onChange('userId','userIdChk');" id="userIdChk" type="checkbox" name="checkbox2" value="a.id" checked>아이디
-								          <input onchange="onChange('userpw','userpwChk');" id="userpwChk" type="checkbox" name="checkbox2" value="a.name" checked>pw
-								         <input onchange="onChange('username','usernameChk');" id="usernameChk" type="checkbox" name="checkbox2" value="a.name" checked>이름
-								         <input onchange="onChange('useremail','useremailChk');" id="useremailChk" type="checkbox" name="checkbox2" value="a.email" checked>이메일
-								         <input onchange="onChange('userdate','userdateChk');" id="userdateChk" type="checkbox" name="checkbox2" value="a.date" checked>날짜
-								         <input onchange="onChange('useraddress','useraddressChk');" id="useraddressChk" type="checkbox" name="checkbox2" value=b.address checked>주소
-								         <input onchange="onChange('userHeight','userHeighChk');" id="userHeighChk" type="checkbox" name="checkbox2" value=b.height checked>키
-								         <input onchange="onChange('userweight','userweightChk');" id="userweightChk" type="checkbox" name="checkbox2" value=b.weight checked>몸무게
-								     </div>
 								     
                             	     <div id="html"></div>
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                            <th id="userId">ID</th>
-                                            <th id="userpw">PW</th>
-                                            <th id="username">NAME</th>
-                                            <th id="useremail">EMAIL</th>
-                                            <th id="userdate">DATE</th>
-                                            <th id="useraddress">주소</th>
-                                            <th id="userHeight">키</th>
-                                            <th id="userweight">몸무게</th>
+                                            <th>ID</th>
+                                            <th>PW</th>
+                                            <th>NAME</th>
+                                            <th>EMAIL</th>
+                                            <th>DATE</th>
+                                            <th>주소</th>
+                                            <th>키</th>
+                                            <th>몸무게</th>
                                         </tr>
                                     </thead>
                                     <tbody id="list">
@@ -78,23 +63,6 @@
 
 
 <script>
- 	let deleteColum = new Map();
-	
-	
-	
-	function onChange(param , selChk) {
-		var test1 = document.getElementById(''+selChk+'').checked;
-		if(test1 != true){
-			deleteColum.set(param,selChk);
-		$('[name="'+param+'"]').hide();
-		$("#"+param+"").hide();			
-		}
-		else if(test1 == true){
-			deleteColum.delete(param);
-			$('[name="'+param+'"]').show();
-			$("#"+param+"").show();			
-		}
-	}
 
 	$(document).ready(function() {
 		selUserList(1);
@@ -137,7 +105,7 @@
 		
 		$.ajax({
 		    type : 'POST',
-		    url : '/board/getUser',
+		    url : '/ex',
 		    dataType: 'json',
 		    data : { chkArray : chkArray , keyword : keyword},
 		    error : function(error) {
@@ -148,27 +116,22 @@
 		    	var count = value.count;
 		    	for(var i = 0; i <map.length; i++){
 		    		html += '<tr>';
-			    	html += '<td name="userId">'+map[i].id+'<br><input type="checkbox" id="userId'+[i]+'" name="userId" value='+map[i].id+'></td>';
-			    	html += '<td name="userpw">'+map[i].pw+'</td>';
-			    	html += '<td name="username">'+map[i].name+'</td>';
-			    	html += '<td name="useremail">'+map[i].email+'</td>';
-			    	html += '<td name="userdate">'+map[i].date+'</td>';
+			    	html += '<td>'+map[i].id+'<br><input type="checkbox" id="userId'+[i]+'" name="userId" value='+map[i].id+'></td>';
+			    	html += '<td>'+map[i].pw+'</td>';
+			    	html += '<td>'+map[i].name+'</td>';
+			    	html += '<td>'+map[i].email+'</td>';
+			    	html += '<td>'+map[i].date+'</td>';
 			    	
-			    	html += '<td name="useraddress">'+map[i].address+'</td>';
-			    	html += '<td name="userHeight">'+map[i].Height+'</td>';
-			    	html += '<td name="userweight">'+map[i].weight+'</td>';
+			    	html += '<td>'+map[i].address+'</td>';
+			    	html += '<td>'+map[i].Height+'</td>';
+			    	html += '<td>'+map[i].weight+'</td>';
 			    	html += '</tr>';
 		    	}
 		    	$("#list").append(html);
 		    	$("#userCount").children().remove();
 		    	html2 = "<h5>현재 회원 목록 수 : "+count+"</h5>";
 		    	$("#userCount").append(html2);
-		    	for (let vegetable of deleteColum.keys()) {
-		    		$('[name="'+vegetable+'"]').hide();
-		    		$("#"+vegetable+"").hide();		
-		    		}
-		    	// deleteColum.forEach((key,val)=>alert(key));
-		    } 
+		    }
 		})
 	}
 	

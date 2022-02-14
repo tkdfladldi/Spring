@@ -11,4 +11,5 @@ public interface BoradMapper {
   int countUser();
   
   int userArrDelete(List<String> paramList);
+  
 }

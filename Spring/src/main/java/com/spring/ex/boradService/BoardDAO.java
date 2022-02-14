@@ -3,6 +3,7 @@ package com.spring.ex.boradService;
 import java.time.LocalDateTime;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -47,12 +48,18 @@ public class BoardDAO {
   
   public List<HashMap> getUser(HttpServletRequest req) {
     HashMap<String, String> map = new HashMap<>();
+    
+    
     String[] arrayParam = req.getParameterValues("chkArray[]");
     String keyword = req.getParameter("keyword");
     if (arrayParam != null) {
+    	
+    	
       String sql = sqlCal(arrayParam, keyword);
       map.put("sql", sql);
     } 
+    
+    
     try {
       List<HashMap> param = ((BoradMapper)this.ss.getMapper(BoradMapper.class)).getUser(map);
       return param;
