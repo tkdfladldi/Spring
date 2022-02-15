@@ -148,7 +148,7 @@ public class BoardDAO {
   public int userArrDelete(List<String> userArr) {
     return ((BoradMapper)this.ss.getMapper(BoradMapper.class)).userArrDelete(userArr);
   }
-  
+   
   
   
   public String sqlCal(String[] arrayParam, String keyword) {
