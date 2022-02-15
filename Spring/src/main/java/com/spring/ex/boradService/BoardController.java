@@ -26,7 +26,7 @@ public class BoardController {
   @ResponseBody
   @RequestMapping(value = {"/board/getUser"}, method = {RequestMethod.POST})
   public Map<String, Object> getUser(HttpServletRequest req) {
-    List<HashMap> param = this.nDAO.getUser(req);
+    List<Map<String, Object>> param = this.nDAO.getUser(req);
     int count = param.size();
     Map<String, Object> mapList = new HashMap<>();
     mapList.put("mapList", param);

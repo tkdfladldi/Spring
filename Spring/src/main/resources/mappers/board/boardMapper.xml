@@ -21,13 +21,13 @@
 		
 	</insert>
 	
-	<select id="getUser" resultType="map" parameterType="String">
+	<select id="getUser" resultType="map" parameterType="map">
 							    select *
                                 from user a 
                                 left join userinformation b 
                                 on a.id = b.id
-                                <include refid="search"></include>	
-                                order by date;
+                                <include refid="whereSql"></include>	
+                                limit ${startList},${listSize}
                                 
 	</select>
 	  <sql id="search">
@@ -48,9 +48,25 @@
 		 id = #{item}
 		</foreach> 
 		</where>
-
-
 	</delete>
+	
+	<select id="countJoinUser" resultType="int">
+					select count(*)
+                    from user a 
+                    left join userinformation b 
+                    on a.id = b.id
+                    <include refid="whereSql"></include>	
+                    order by date;
+	</select>
+	
+	<sql id="whereSql">
+		<if test="arry != null">
+			<where>
+				<foreach collection="arry" item="col" separator="or">
+					${col} like CONCAT('%',#{keyword},'%')
+				</foreach>
+			</where>
+		</if>
+	</sql>
 </mapper>
-
 

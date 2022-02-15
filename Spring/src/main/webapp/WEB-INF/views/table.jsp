@@ -70,6 +70,9 @@
                                        
                                     </tbody>
                                 </table>
+                               
+                                <ul class="pagination">
+								</ul>
                             </div>
                         </div>
 </div>
@@ -79,8 +82,6 @@
 
 <script>
  	let deleteColum = new Map();
-	
-	
 	
 	function onChange(param , selChk) {
 		var test1 = document.getElementById(''+selChk+'').checked;
@@ -97,7 +98,7 @@
 	}
 
 	$(document).ready(function() {
-		selUserList(1);
+		selUserList(1,1,1,10);
 	});
 	
 	function checkboxGET() {
@@ -109,7 +110,7 @@
 	                chkArray.push(document.getElementsByName("checkbox")[i].value);
 	            }
 		    }
-		   selUserList(chkArray);
+		   selUserList(chkArray,1,1,10);
 	}
 
  	var count = 2;
@@ -129,24 +130,32 @@
 		count += 1;
 		
 	}
-	function selUserList(chkArray) {
+	function selUserList(chkArray,page,range,listSize) {
 		var keyword = $("#keyword").val();
 	    $(".dataTable-search").remove();
 		$("#list").children().remove();
+		$(".pagination").children().remove();
+		
 		var html = "";
 		
+	
 		$.ajax({
 		    type : 'POST',
 		    url : '/board/getUser',
 		    dataType: 'json',
-		    data : { chkArray : chkArray , keyword : keyword},
+		    data : { chkArray : chkArray , 
+		    		 keyword : keyword, 
+		    		 page : page, 
+		    		 range : range,
+		    		 listSize : listSize},
+		    		 
 		    error : function(error) {
 		        alert("Error!" + error);
 		    },
 		    success : function(value) {
 		    	var map = value.mapList;
-		    	var count = value.count;
-		    	for(var i = 0; i <map.length; i++){
+		    	var count = value.count-1;
+		    	for(var i = 0; i <map.length-1; i++){
 		    		html += '<tr>';
 			    	html += '<td name="userId">'+map[i].id+'<br><input type="checkbox" id="userId'+[i]+'" name="userId" value='+map[i].id+'></td>';
 			    	html += '<td name="userpw">'+map[i].pw+'</td>';
@@ -163,16 +172,45 @@
 		    	$("#userCount").children().remove();
 		    	html2 = "<h5>현재 회원 목록 수 : "+count+"</h5>";
 		    	$("#userCount").append(html2);
+		    	
 		    	for (let vegetable of deleteColum.keys()) {
 		    		$('[name="'+vegetable+'"]').hide();
 		    		$("#"+vegetable+"").hide();		
-		    		}
-		    	// deleteColum.forEach((key,val)=>alert(key));
+		    	}
+		    	
+		    	var pageNa = map[map.length-1];
+		    	
+		    	pageNation(pageNa.startPage,pageNa.endPage,pageNa.range,pageNa.listSize,pageNa.prev,pageNa.next);
 		    } 
 		})
 	}
-	
-
+	function pageNation(startPage , endPage , range , listSize, prev ,next) {
+		 var pagaNationN = "";
+		 if(prev == "true"){
+		 pagaNationN += '<li class="btn"><a onclick="goPrev('+range+','+listSize+');" style="color: red" href="#"> << </a></li>';			 
+		 }
+		 
+		for(var i = startPage; i<=endPage; i++){
+			pagaNationN += '<li class="btn"><a onclick="goPage('+i+','+range+','+listSize+');" style="color: red" href="#">'+i+'</a></li>';
+		}
+		if(next == "true"){
+		pagaNationN += '<li class="btn"><a onclick="goNext('+range+','+listSize+');" style="color: red" href="#"> >> </a></li>';
+		}
+			$(".pagination").append(pagaNationN);		
+	}
+	function goPage(page, range, listSize) {
+		selUserList(1,page,range,listSize)
+	}
+	function goPrev(range, listSize) {
+		var page = (range -1) * listSize;
+		var range = range - 1;
+		selUserList(1,page,range,listSize)
+	}
+	function goNext(range, listSize) {
+		var page =  range * listSize+1;
+		range = range + 1;
+		selUserList(1,page,range,listSize)
+	}
 	function usersDelete() {
 		var chkArray = new Array();
 		
